@@ -9,6 +9,7 @@ library(ggpubr)
 library(rstatix)
 library(rcompanion)
 
+## convert Stride length from cm to m
 Df <- Df %>% mutate(OG_SL = OG_SL / 100, TM_SL = TM_SL / 100)
 
 ##DATA SUBSETS
@@ -579,7 +580,6 @@ SC_bySex_Track <- ggarrange(SC_Speed_Track_Females,SC_Speed_Track_Males,
                             ncol = 2, nrow = 5)
 ggsave("SC_bySex_Track.png")
 
-
 ########################### ANOVA #######################
 
 library(effectsize) ##for eta squared
@@ -738,7 +738,6 @@ Df %>% group_by(Group) %>%
 Df %>% group_by(Group) %>%
   rstatix:::cohens_d(OG_SL ~ Gender, paired = FALSE)
 
-
 #ANOVAS Stride Frequency Treadmill
 ANOVA_SF_TM = aov(TM_SF ~ Group + Gender, data=Df)
 summary(ANOVA_SF_TM)
@@ -776,4 +775,3 @@ Df %>% group_by(Group) %>%
 
 Df %>% group_by(Group) %>%
   rstatix:::cohens_d(OG_SF ~ Gender, paired = FALSE)
-
