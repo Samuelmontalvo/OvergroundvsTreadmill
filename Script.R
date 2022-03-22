@@ -97,7 +97,7 @@ BA_Recreational
 ggsave("BA_Recreational.png")
 
 
-#########################CORRELATION ANALYSIS ##################################
+###################CORRELATION and REGRESSION ANALYSIS ######################
 
 ## Speed by training status: Mean SD 95 CI and correlation
 groupwiseMean(var = "TM_Speed", data = Df_Recreational)
@@ -107,6 +107,9 @@ groupwiseMean(var = "OG_Speed", data = Df_Recreational)
 sd(Df_Recreational$OG_Speed)
 
 Df_Recreational %>% cor_test(OG_Speed,TM_Speed)
+
+lm_Speed_Recreational <- lm(TM_Speed ~ OG_Speed, data=Df_Recreational)
+summary(lm_Speed_Recreational)
 
 SC_Speed_Recreational <- ggplot(data=Df_Recreational, aes(x=OG_Speed, y=TM_Speed)) +
   geom_smooth(method="lm") + labs(x = "OG Speed (m/s)",
@@ -121,6 +124,9 @@ groupwiseMean(var = "OG_Speed", data = Df_Track)
 sd(Df_Track$OG_Speed)
 
 Df_Track %>% cor_test(OG_Speed,TM_Speed)
+
+lm_Speed_Trackl <- lm(TM_Speed ~ OG_Speed, data=Df_Track)
+summary(lm_Speed_Trackl)
 
 SC_Speed_Track <- ggplot(data=Df_Track, aes(x=OG_Speed, y=TM_Speed)) +
   geom_smooth(method="lm") + labs(x = "OG Speed (m/s)",
@@ -137,6 +143,9 @@ sd(Df_Recreational$OG_CT)
 
 Df_Recreational %>% cor_test(OG_CT,TM_CT)
 
+lm_CT_Recreational <- lm(TM_CT ~ OG_CT, data=Df_Recreational)
+summary(lm_CT_Recreational)
+
 SC_CT_Recreational <- ggplot(data=Df_Recreational, aes(x=OG_CT, y=TM_CT)) +
   geom_smooth(method="lm") + labs(x = "OG CT (s)",
                                   y = "TR CT (s)") +
@@ -150,6 +159,9 @@ groupwiseMean(var = "OG_CT", data = Df_Track)
 sd(Df_Track$OG_CT)
 
 Df_Track %>% cor_test(OG_CT,TM_CT)
+
+lm_CT_Track <- lm(TM_CT ~ OG_CT, data=Df_Track)
+summary(lm_CT_Track)
 
 SC_CT_Track <- ggplot(data=Df_Track, aes(x=OG_CT, y=TM_CT)) +
   geom_smooth(method="lm") + labs(x = "OG CT (s)",
@@ -172,6 +184,9 @@ SC_FT_Recreational <- ggplot(data=Df_Recreational, aes(x=OG_TF, y=TM_TF)) +
   geom_point() +
   stat_regline_equation(label.x=0.09, label.y=1.0) + theme_classic()
 
+lm_FT_Recreational <- lm(TM_TF ~ OG_TF, data=Df_Recreational)
+summary(lm_FT_Recreational)
+
 groupwiseMean(var = "TM_TF", data = Df_Track)
 sd(Df_Track$TM_TF)
 
@@ -180,12 +195,14 @@ sd(Df_Track$OG_TF)
 
 Df_Track %>% cor_test(OG_TF,TM_TF)
 
+lm_FT_Track <- lm(TM_TF ~ OG_TF, data=Df_Track)
+summary(lm_FT_Track)
+
 SC_FT_Track <- ggplot(data=Df_Track, aes(x=OG_TF, y=TM_TF)) +
   geom_smooth(method="lm") + labs(x = "OG FT (s)",
                                   y = "TR FT (s)") +
   geom_point() +
   stat_regline_equation(label.x=0.10, label.y=0.24) + theme_classic()
-
 
 ## Stride Length by training status: Mean SD 95 CI and correlation
 groupwiseMean(var = "TM_SL", data = Df_Recreational)
@@ -195,6 +212,9 @@ groupwiseMean(var = "OG_SL", data = Df_Recreational)
 sd(Df_Recreational$OG_SL)
 
 Df_Recreational %>% cor_test(OG_SL,TM_SL)
+
+lm_SL_Recreational <- lm(TM_SL ~ OG_SL, data=Df_Recreational)
+summary(lm_SL_Recreational)
 
 SC_SL_Recreational <- ggplot(data=Df_Recreational, aes(x=OG_SL, y=TM_SL)) +
   geom_smooth(method="lm") + labs(x = "OG SL (m)",
@@ -209,6 +229,9 @@ groupwiseMean(var = "OG_SL", data = Df_Track)
 sd(Df_Track$OG_SL)
 
 Df_Track %>% cor_test(OG_SL,TM_SL)
+
+lm_SL_Track <- lm(TM_SL ~ OG_SL, data=Df_Track)
+summary(lm_SL_Track)
 
 SC_SL_Track <- ggplot(data=Df_Track, aes(x=OG_SL, y=TM_SL)) +
   geom_smooth(method="lm") + labs(x = "OG SL (m)",
@@ -225,6 +248,9 @@ sd(Df_Recreational$OG_SF)
 
 Df_Recreational %>% cor_test(OG_SF,TM_SF)
 
+lm_SF_Recreational <- lm(TM_SF ~ OG_SF, data=Df_Recreational)
+summary(lm_SF_Recreational)
+
 SC_SF_Recreational <- ggplot(data=Df_Recreational, aes(x=OG_SF, y=TM_SF)) +
   geom_smooth(method="lm") + labs(x = "OG SF (seps/s)",
                                   y = "TR SF (seps/s)") +
@@ -238,6 +264,9 @@ groupwiseMean(var = "OG_SF", data = Df_Track)
 sd(Df_Track$OG_SF)
 
 Df_Track %>% cor_test(OG_SF,TM_SF)
+
+lm_SF_Track <- lm(TM_SF ~ OG_SF, data=Df_Track)
+summary(lm_SF_Track)
 
 SC_SF_Track <- ggplot(data=Df_Track, aes(x=OG_SF, y=TM_SF)) +
   geom_smooth(method="lm") + labs(x = "OG SF (seps/s)",
@@ -261,6 +290,9 @@ sd(Df_Recreational_Females$OG_Speed)
 
 Df_Recreational_Females %>% cor_test(OG_Speed,TM_Speed)
 
+lm_Speed_Recreational_Females <- lm(TM_Speed ~ OG_Speed, data=Df_Recreational_Females)
+summary(lm_Speed_Recreational_Females)
+
 SC_Speed_Recreational_Females <- ggplot(data=Df_Recreational_Females, 
                                         aes(x=OG_Speed, y=TM_Speed)) +
   geom_smooth(method="lm") + labs(x = "OG Speed (m/s)",
@@ -275,6 +307,9 @@ groupwiseMean(var = "OG_Speed", data = Df_Recreational_Males)
 sd(Df_Recreational_Males$OG_Speed)
 
 Df_Recreational_Males %>% cor_test(OG_Speed,TM_Speed)
+
+lm_Speed_Recreational_Males <- lm(TM_Speed ~ OG_Speed, data=Df_Recreational_Males)
+summary(lm_Speed_Recreational_Males)
 
 SC_Speed_Recreational_Males <- ggplot(data=Df_Recreational_Males, 
                                         aes(x=OG_Speed, y=TM_Speed)) +
@@ -292,6 +327,9 @@ sd(Df_Recreational_Females$OG_CT)
 
 Df_Recreational_Females %>% cor_test(OG_CT,TM_CT)
 
+lm_CT_Recreational_Females <- lm(TM_CT ~ OG_CT, data=Df_Recreational_Females)
+summary(lm_CT_Recreational_Females)
+
 SC_CT_Recreational_Females <- ggplot(data=Df_Recreational_Females, 
                                      aes(x=OG_CT, y=TM_CT)) +
   geom_smooth(method="lm") + labs(x = "OG CT (s)",
@@ -306,6 +344,9 @@ groupwiseMean(var = "OG_CT", data = Df_Recreational_Males)
 sd(Df_Recreational_Males$OG_CT)
 
 Df_Recreational_Males %>% cor_test(OG_CT,TM_CT)
+
+lm_CT_Recreational_Males <- lm(TM_CT ~ OG_CT, data=Df_Recreational_Males)
+summary(lm_CT_Recreational_Males)
 
 SC_CT_Recreational_Males <- ggplot(data=Df_Recreational_Males, 
                                      aes(x=OG_CT, y=TM_CT)) +
@@ -323,6 +364,9 @@ sd(Df_Recreational_Females$OG_TF)
 
 Df_Recreational_Females %>% cor_test(OG_TF,TM_TF)
 
+lm_FT_Recreational_Females <- lm(TM_TF ~ OG_TF, data=Df_Recreational_Females)
+summary(lm_FT_Recreational_Females)
+
 SC_FT_Recreational_Females <- ggplot(data=Df_Recreational_Females, 
                              aes(x=OG_TF, y=TM_TF)) +
   geom_smooth(method="lm") + labs(x = "OG FT (s)",
@@ -337,6 +381,9 @@ groupwiseMean(var = "OG_TF", data = Df_Recreational_Males)
 sd(Df_Recreational_Males$OG_TF)
 
 Df_Recreational_Males %>% cor_test(OG_TF,TM_TF)
+
+lm_FT_Recreational_Males <- lm(TM_TF ~ OG_TF, data=Df_Recreational_Males)
+summary(lm_FT_Recreational_Males)
 
 SC_FT_Recreational_Males <- ggplot(data=Df_Recreational_Males, 
                                      aes(x=OG_TF, y=TM_TF)) +
@@ -354,6 +401,9 @@ sd(Df_Recreational_Females$OG_SL)
 
 Df_Recreational_Females %>% cor_test(OG_SL,TM_SL)
 
+lm_SL_Recreational_Females <- lm(TM_SL ~ OG_SL, data=Df_Recreational_Females)
+summary(lm_SL_Recreational_Females)
+
 SC_SL_Recreational_Females <- ggplot(data=Df_Recreational_Females, 
                                     aes(x=OG_SL, y=TM_SL)) +
   geom_smooth(method="lm") + labs(x = "OG SL (m)",
@@ -368,6 +418,9 @@ groupwiseMean(var = "OG_SL", data = Df_Recreational_Males)
 sd(Df_Recreational_Males$OG_SL)
 
 Df_Recreational_Males %>% cor_test(OG_SL,TM_SL)
+
+lm_SL_Recreational_Males <- lm(TM_SL ~ OG_SL, data=Df_Recreational_Males)
+summary(lm_SL_Recreational_Males)
 
 SC_SL_Recreational_Males <- ggplot(data=Df_Recreational_Males, 
                                     aes(x=OG_SL, y=TM_SL)) +
@@ -385,6 +438,9 @@ sd(Df_Recreational_Females$OG_SF)
 
 Df_Recreational_Females %>% cor_test(OG_SF,TM_SF)
 
+lm_SF_Recreational_Females <- lm(TM_SF ~ OG_SF, data=Df_Recreational_Females)
+summary(lm_SF_Recreational_Females)
+
 SC_SF_Recreational_Females <- ggplot(data=Df_Recreational_Females, 
                                      aes(x=OG_SF, y=TM_SF)) +
   geom_smooth(method="lm") + labs(x = "OG SF (seps/s)",
@@ -399,6 +455,9 @@ groupwiseMean(var = "OG_SF", data = Df_Recreational_Males)
 sd(Df_Recreational_Males$OG_SF)
 
 Df_Recreational_Males %>% cor_test(OG_SF,TM_SF)
+
+lm_SF_Recreational_Males <- lm(TM_SF ~ OG_SF, data=Df_Recreational_Males)
+summary(lm_SF_Recreational_Males)
 
 SC_SF_Recreational_Males <- ggplot(data=Df_Recreational_Males, 
                                      aes(x=OG_SF, y=TM_SF)) +
@@ -426,6 +485,9 @@ sd(Df_Track_Females$OG_Speed)
 
 Df_Track_Females %>% cor_test(OG_Speed,TM_Speed)
 
+lm_Speed_Track_Females <- lm(TM_Speed ~ OG_Speed, data=Df_Track_Females)
+summary(lm_Speed_Track_Females)
+
 SC_Speed_Track_Females <- ggplot(data=Df_Track_Females, 
                                         aes(x=OG_Speed, y=TM_Speed)) +
   geom_smooth(method="lm") + labs(x = "OG Speed (m/s)",
@@ -440,6 +502,9 @@ groupwiseMean(var = "OG_Speed", data = Df_Track_Males)
 sd(Df_Track_Males$OG_Speed)
 
 Df_Track_Males %>% cor_test(OG_Speed,TM_Speed)
+
+lm_Speed_Track_Males <- lm(TM_Speed ~ OG_Speed, data=Df_Track_Males)
+summary(lm_Speed_Track_Males)
 
 SC_Speed_Track_Males <- ggplot(data=Df_Track_Males, 
                                  aes(x=OG_Speed, y=TM_Speed)) +
@@ -457,6 +522,9 @@ sd(Df_Track_Females$OG_CT)
 
 Df_Track_Females %>% cor_test(OG_CT,TM_CT)
 
+lm_CT_Track_Females <- lm(TM_CT ~ OG_CT, data=Df_Track_Females)
+summary(lm_CT_Track_Females)
+
 SC_CT_Track_Females <- ggplot(data=Df_Track_Females, 
                                      aes(x=OG_CT, y=TM_CT)) +
   geom_smooth(method="lm") + labs(x = "OG CT (s)",
@@ -471,6 +539,9 @@ groupwiseMean(var = "OG_CT", data = Df_Track_Males)
 sd(Df_Track_Males$OG_CT)
 
 Df_Track_Males %>% cor_test(OG_CT,TM_CT)
+
+lm_CT_Track_Males <- lm(TM_CT ~ OG_CT, data=Df_Track_Males)
+summary(lm_CT_Track_Males)
 
 SC_CT_Track_Males <- ggplot(data=Df_Track_Males, 
                               aes(x=OG_CT, y=TM_CT)) +
@@ -488,6 +559,9 @@ sd(Df_Track_Females$OG_TF)
 
 Df_Track_Females %>% cor_test(OG_TF,TM_TF)
 
+lm_FT_Track_Females <- lm(TM_TF ~ OG_TF, data=Df_Track_Females)
+summary(lm_FT_Track_Females)
+
 SC_FT_Track_Females <- ggplot(data=Df_Track_Females, 
                                      aes(x=OG_TF, y=TM_TF)) +
   geom_smooth(method="lm") + labs(x = "OG FT (s)",
@@ -502,6 +576,9 @@ groupwiseMean(var = "OG_TF", data = Df_Track_Males)
 sd(Df_Track_Males$OG_TF)
 
 Df_Track_Males %>% cor_test(OG_TF,TM_TF)
+
+lm_CT_Track_Males <- lm(TM_TF ~ OG_TF, data=Df_Track_Males)
+summary(lm_CT_Track_Males)
 
 SC_FT_Track_Males <- ggplot(data=Df_Track_Males, 
                               aes(x=OG_TF, y=TM_TF)) +
@@ -519,6 +596,9 @@ sd(Df_Track_Females$OG_SL)
 
 Df_Track_Females %>% cor_test(OG_SL,TM_SL)
 
+lm_SL_Track_Females <- lm(TM_SL ~ OG_SL, data=Df_Track_Females)
+summary(lm_FT_Track_Females)
+
 SC_SL_Track_Females <- ggplot(data=Df_Track_Females, 
                                      aes(x=OG_SL, y=TM_SL)) +
   geom_smooth(method="lm") + labs(x = "OG SL (m)",
@@ -533,6 +613,9 @@ groupwiseMean(var = "OG_SL", data = Df_Track_Males)
 sd(Df_Track_Males$OG_SL)
 
 Df_Track_Males %>% cor_test(OG_SL,TM_SL)
+
+lm_SL_Track_Males <- lm(TM_SL ~ OG_SL, data=Df_Track_Males)
+summary(lm_SL_Track_Males)
 
 SC_SL_Track_Males <- ggplot(data=Df_Track_Males, 
                               aes(x=OG_SL, y=TM_SL)) +
@@ -550,6 +633,9 @@ sd(Df_Track_Females$OG_SF)
 
 Df_Track_Females %>% cor_test(OG_SF,TM_SF)
 
+lm_SF_Track_Females <- lm(TM_SF ~ OG_SF, data=Df_Track_Females)
+summary(lm_SF_Track_Females)
+
 SC_SF_Track_Females <- ggplot(data=Df_Track_Females, 
                                      aes(x=OG_SF, y=TM_SF)) +
   geom_smooth(method="lm") + labs(x = "OG SF (seps/s)",
@@ -564,6 +650,9 @@ groupwiseMean(var = "OG_SF", data = Df_Track_Males)
 sd(Df_Track_Males$OG_SF)
 
 Df_Track_Males %>% cor_test(OG_SF,TM_SF)
+
+lm_SL_Track_Males <- lm(TM_SF ~ OG_SF, data=Df_Track_Males)
+summary(lm_SL_Track_Males)
 
 SC_SF_Track_Males <- ggplot(data=Df_Track_Males, 
                               aes(x=OG_SF, y=TM_SF)) +
@@ -580,7 +669,7 @@ SC_bySex_Track <- ggarrange(SC_Speed_Track_Females,SC_Speed_Track_Males,
                             ncol = 2, nrow = 5)
 ggsave("SC_bySex_Track.png")
 
-########################### ANOVA #######################
+########################### ANOVAS #######################
 
 library(effectsize) ##for eta squared
 library(kableExtra)
@@ -622,7 +711,6 @@ Df %>% group_by(Group) %>%
 
 Df %>% group_by(Group) %>%
   rstatix:::cohens_d(OG_Speed ~ Gender, paired = FALSE)
-
 
 #ANOVAS Contact Time Treadmill
 ANOVA_CT_TM = aov(TM_CT ~ Group + Gender, data=Df)
