@@ -8,6 +8,7 @@ library(blandr)
 library(ggpubr)
 library(rstatix)
 library(rcompanion)
+library(vtable)
 
 ## convert Stride length from cm to m
 Df <- Df %>% mutate(OG_SL = OG_SL / 100, TM_SL = TM_SL / 100)
@@ -19,11 +20,24 @@ Df_Track_Females <- Df %>% filter(Group == "TRACK", Gender =="F" )
 
 Df_Recreational <- Df %>% filter(Group == "RECREATIONAL" )
 Df_Recreational_Males <- Df %>% filter(Group == "RECREATIONAL", Gender =="M" )
-Df_Recreational_Females <- Df %>% filter(Group == "TRACK", Gender =="F" )
+Df_Recreational_Females <- Df %>% filter(Group == "RECREATIONAL", Gender =="F" )
 
 ## Set Factors
 Df$Gender <- as.factor(Df$Gender)
 Df$Group <- as.factor(Df$Group)
+
+Descriptives_Track <- Df_Track %>% 
+  select(Gender, Age,Weight,Leg_Length,Thigh_Circumference)
+
+Descriptives_Recreational <- Df_Recreational %>% 
+  select(Gender, Age,Weight,Leg_Length,Thigh_Circumference)
+
+Descriptives_Track %>%
+sumtable(group='Gender')
+
+Descriptives_Recreational %>%
+  sumtable(group='Gender')
+
 
 #####################AGREEGMENT ANALYSIS ##################################
 
@@ -33,7 +47,7 @@ BA_speed_track <- blandr.draw(Df_Track$OG_Speed, Df_Track$TM_Speed, ciDisplay = 
                         plotProportionalBias = TRUE, plotProportionalBias.se = TRUE,
                         plotTitle = "A) Speed") +
   theme_classic()
-
+blandr.statistics(Df_Track$OG_Speed, Df_Track$TM_Speed)
 
 BA_CT_track <- blandr.draw(Df_Track$OG_CT, Df_Track$TM_CT, ciDisplay = FALSE , ciShading = FALSE,
                      plotProportionalBias = TRUE, plotProportionalBias.se = TRUE,
@@ -182,7 +196,7 @@ SC_FT_Recreational <- ggplot(data=Df_Recreational, aes(x=OG_TF, y=TM_TF)) +
   geom_smooth(method="lm") + labs(x = "OG FT (s)",
                                   y = "TR FT (s)") +
   geom_point() +
-  stat_regline_equation(label.x=0.09, label.y=1.0) + theme_classic()
+  stat_regline_equation(label.x=0.09, label.y=0.16) + theme_classic()
 
 lm_FT_Recreational <- lm(TM_TF ~ OG_TF, data=Df_Recreational)
 summary(lm_FT_Recreational)
@@ -220,7 +234,7 @@ SC_SL_Recreational <- ggplot(data=Df_Recreational, aes(x=OG_SL, y=TM_SL)) +
   geom_smooth(method="lm") + labs(x = "OG SL (m)",
                                   y = "TR SL (m)") +
   geom_point() +
-  stat_regline_equation(label.x=1.65, label.y=5) + theme_classic()
+  stat_regline_equation(label.x=1.65, label.y=3) + theme_classic()
 
 groupwiseMean(var = "TM_SL", data = Df_Track)
 sd(Df_Track$TM_SL)
@@ -278,6 +292,7 @@ SC_SF_Track <- ggplot(data=Df_Track, aes(x=OG_SF, y=TM_SF)) +
 SC_group <- ggarrange(SC_Speed_Recreational,SC_Speed_Track,SC_CT_Recreational,SC_CT_Track,
           SC_FT_Recreational,SC_FT_Track,SC_SL_Recreational,
           SC_SL_Track,SC_SF_Recreational,SC_SF_Track, ncol = 2, nrow = 5)
+SC_group
 ggsave("SC_group.png")
 ################################By Sex Recreational group
 ## Speed by Sex: Mean SD 95 CI and correlation
@@ -298,7 +313,7 @@ SC_Speed_Recreational_Females <- ggplot(data=Df_Recreational_Females,
   geom_smooth(method="lm") + labs(x = "OG Speed (m/s)",
                                   y = "TR Speed (m/s)") +
   geom_point() +
-  stat_regline_equation(label.x=7.7, label.y=10) + theme_classic()
+  stat_regline_equation(label.x=7.3, label.y=8.5) + theme_classic()
 
 groupwiseMean(var = "TM_Speed", data = Df_Recreational_Males)
 sd(Df_Recreational_Males$TM_Speed)
@@ -335,7 +350,7 @@ SC_CT_Recreational_Females <- ggplot(data=Df_Recreational_Females,
   geom_smooth(method="lm") + labs(x = "OG CT (s)",
                                   y = "TR CT (s)") +
   geom_point() +
-  stat_regline_equation(label.x=0.075, label.y=0.165) + theme_classic()
+  stat_regline_equation(label.x=0.155, label.y=0.220) + theme_classic()
 
 groupwiseMean(var = "TM_CT", data = Df_Recreational_Males)
 sd(Df_Recreational_Males$TM_CT)
@@ -390,7 +405,7 @@ SC_FT_Recreational_Males <- ggplot(data=Df_Recreational_Males,
   geom_smooth(method="lm") + labs(x = "OG FT (s)",
                                   y = "TR FT (s)") +
   geom_point() +
-  stat_regline_equation(label.x=0.09, label.y=0.95) + theme_classic()
+  stat_regline_equation(label.x=0.088, label.y=0.175) + theme_classic()
 
 ## Stride Length by Sex: Mean SD 95 CI and correlation
 groupwiseMean(var = "TM_SL", data = Df_Recreational_Females)
@@ -409,7 +424,7 @@ SC_SL_Recreational_Females <- ggplot(data=Df_Recreational_Females,
   geom_smooth(method="lm") + labs(x = "OG SL (m)",
                                   y = "TR SL (m)") +
   geom_point() +
-  stat_regline_equation(label.x=1.9, label.y=3.1) + theme_classic()
+  stat_regline_equation(label.x=1.9, label.y=3.2) + theme_classic()
 
 groupwiseMean(var = "TM_SL", data = Df_Recreational_Males)
 sd(Df_Recreational_Males$TM_SL)
@@ -427,7 +442,7 @@ SC_SL_Recreational_Males <- ggplot(data=Df_Recreational_Males,
   geom_smooth(method="lm") + labs(x = "OG SL (m)",
                                   y = "TR SL (m)") +
   geom_point() +
-  stat_regline_equation(label.x=1.8, label.y=3.3) + theme_classic()
+  stat_regline_equation(label.x=1.8, label.y=2.6) + theme_classic()
 
 ## Stride Frequency by Sex: Mean SD 95 CI and correlation
 groupwiseMean(var = "TM_SF", data = Df_Recreational_Females)
@@ -446,7 +461,7 @@ SC_SF_Recreational_Females <- ggplot(data=Df_Recreational_Females,
   geom_smooth(method="lm") + labs(x = "OG SF (seps/s)",
                                   y = "TR SF (seps/s)") +
   geom_point() +
-  stat_regline_equation(label.x=3.4, label.y=5.5) + theme_classic()
+  stat_regline_equation(label.x=3.4, label.y=4.7) + theme_classic()
 
 groupwiseMean(var = "TM_SF", data = Df_Recreational_Males)
 sd(Df_Recreational_Males$TM_SF)
@@ -472,6 +487,7 @@ SC_bySex_Recreational <- ggarrange(SC_Speed_Recreational_Females,SC_Speed_Recrea
                       SC_SL_Recreational_Females,SC_SL_Recreational_Males,
                       SC_SF_Recreational_Females,SC_SF_Recreational_Males,
                       ncol = 2, nrow = 5)
+SC_bySex_Recreational
 ggsave("SC_bySex_Recreational.png")
 
 ################################By Sex TRACK group
@@ -667,6 +683,7 @@ SC_bySex_Track <- ggarrange(SC_Speed_Track_Females,SC_Speed_Track_Males,
                             SC_SL_Track_Females,SC_SL_Track_Males,
                             SC_SF_Track_Females,SC_SF_Track_Males,
                             ncol = 2, nrow = 5)
+SC_bySex_Track
 ggsave("SC_bySex_Track.png")
 
 ########################### ANOVAS #######################
@@ -677,7 +694,7 @@ library(kableExtra)
 #ANOVAS Speed Treadmill
 ANOVA_Speed_TM = aov(TM_Speed ~ Group + Gender, data=Df)
 summary(ANOVA_Speed_TM)
-eta_squared(ANOVA_Speed_TM, partial = TRUE)
+eta_squared(ANOVA_Speed_TM)
 
 ##POST HOC with effect size by sex
 Df %>% group_by(Gender) %>%
@@ -696,7 +713,7 @@ Df %>% group_by(Group) %>%
 #ANOVAS Speed Overground
 ANOVA_Speed_Overground = aov(OG_Speed ~ Group + Gender, data=Df)
 summary(ANOVA_Speed_Overground)
-eta_squared(ANOVA_Speed_Overground, partial = TRUE)
+eta_squared(ANOVA_Speed_Overground)
 
 ##POST HOC with effect size by sex
 Df %>% group_by(Gender) %>%
@@ -715,7 +732,7 @@ Df %>% group_by(Group) %>%
 #ANOVAS Contact Time Treadmill
 ANOVA_CT_TM = aov(TM_CT ~ Group + Gender, data=Df)
 summary(ANOVA_CT_TM)
-eta_squared(ANOVA_CT_TM, partial = TRUE)
+eta_squared(ANOVA_CT_TM)
 
 ##POST HOC with effect size by sex
 Df %>% group_by(Gender) %>%
@@ -734,7 +751,7 @@ Df %>% group_by(Group) %>%
 #ANOVAS Contact Time Overground
 ANOVA_CT_Overground = aov(OG_CT ~ Group + Gender, data=Df)
 summary(ANOVA_CT_Overground)
-eta_squared(ANOVA_CT_Overground, partial = TRUE)
+eta_squared(ANOVA_CT_Overground)
 
 ##POST HOC with effect size by sex
 Df %>% group_by(Gender) %>%
@@ -753,7 +770,7 @@ Df %>% group_by(Group) %>%
 #ANOVAS Flight Time Treadmill
 ANOVA_FT_TM = aov(TM_TF ~ Group + Gender, data=Df)
 summary(ANOVA_FT_TM)
-eta_squared(ANOVA_FT_TM, partial = TRUE)
+eta_squared(ANOVA_FT_TM)
 
 ##POST HOC with effect size by sex
 Df %>% group_by(Gender) %>%
@@ -772,7 +789,7 @@ Df %>% group_by(Group) %>%
 #ANOVAS Flight Time Overground
 ANOVA_FT_Overground = aov(OG_TF ~ Group + Gender, data=Df)
 summary(ANOVA_FT_Overground)
-eta_squared(ANOVA_FT_Overground, partial = TRUE)
+eta_squared(ANOVA_FT_Overground)
 
 ##POST HOC with effect size by sex
 Df %>% group_by(Gender) %>%
@@ -791,7 +808,7 @@ Df %>% group_by(Group) %>%
 #ANOVAS Stride Length Treadmill
 ANOVA_SL_TM = aov(TM_SL ~ Group + Gender, data=Df)
 summary(ANOVA_SL_TM)
-eta_squared(ANOVA_SL_TM, partial = TRUE)
+eta_squared(ANOVA_SL_TM)
 
 ##POST HOC with effect size by sex
 Df %>% group_by(Gender) %>%
@@ -810,7 +827,7 @@ Df %>% group_by(Group) %>%
 #ANOVAS Stride Length Overground
 ANOVA_SL_Overground = aov(OG_SL ~ Group + Gender, data=Df)
 summary(ANOVA_SL_Overground)
-eta_squared(ANOVA_SL_Overground, partial = TRUE)
+eta_squared(ANOVA_SL_Overground)
 
 ##POST HOC with effect size by sex
 Df %>% group_by(Gender) %>%
@@ -829,7 +846,7 @@ Df %>% group_by(Group) %>%
 #ANOVAS Stride Frequency Treadmill
 ANOVA_SF_TM = aov(TM_SF ~ Group + Gender, data=Df)
 summary(ANOVA_SF_TM)
-eta_squared(ANOVA_SF_TM, partial = TRUE)
+eta_squared(ANOVA_SF_TM)
 
 ##POST HOC with effect size by sex
 Df %>% group_by(Gender) %>%
@@ -848,7 +865,7 @@ Df %>% group_by(Group) %>%
 #ANOVAS Stride Frequency Overground
 ANOVA_SF_Overground = aov(OG_SF ~ Group + Gender, data=Df)
 summary(ANOVA_SF_Overground)
-eta_squared(ANOVA_SF_Overground, partial = TRUE)
+eta_squared(ANOVA_SF_Overground)
 
 ##POST HOC with effect size by sex
 Df %>% group_by(Gender) %>%
