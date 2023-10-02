@@ -21,8 +21,6 @@ library(lme4)
 library(lmerTest)
 library(sjPlot)
 library(ggprism)
-library(dplyr)
-library(purrr)
 library(rstatix)
 library(knitr)
 ```
@@ -69,8 +67,24 @@ label(Df$Thigh_Circumference	)   <- "Thigh Circumference (cm)"
 
 caption  <- "Table 1. Descriptive group characteristics"
 
+my.render.cont <- function(x) {
+    with(stats.default(x), 
+         c("",
+           
+          "Mean (SD)" = sprintf("%s (%s)",
+                                round_pad(MEAN, 2),
+                                round_pad(SD, 2)),
+         
+          "Median (Min, Max)" = sprintf("%s (%s, %s)",
+                                       round_pad(MEDIAN, 2), 
+                                       round_pad(MIN, 2), 
+                                       round_pad(MAX, 2)))
+    )
+}
 
-table1(~Age + Weight + Height + Leg_Length + Thigh_Circumference | Group*Sex, data=Df, caption=caption, overall = FALSE)
+
+table1(~Age + Weight + Height + Leg_Length + Thigh_Circumference | Group*Sex, data=Df, caption=caption, overall = FALSE,
+       , render.continuous=my.render.cont)
 ```
 
 
@@ -100,7 +114,7 @@ kable(results, caption = "Shapiro-Wilk Normality Tests by Group for Multiple Var
 
 
 ```{r, eval=FALSE}
-model1 <- lmer(Speed ~ Sprint_Type + Group + Sex + Age + Weight + Height + Leg_Length + Thigh_Circumference + (1|ID), data = Df)
+model1 <- lmer(Speed ~ Sprint_Type * Group + Sex + Age + Weight + Height + Leg_Length + Thigh_Circumference + (1|ID), data = Df)
 summary(model1)
 AIC(model1)
 BIC(model1)
@@ -122,12 +136,12 @@ model3 <- lmer(Speed ~ Sprint_Type * Group + Sex  + (1|ID), data = Df)
 
 
 ```{r}
-tab_model(model3, show.reflvl = TRUE, p.style = "numeric_stars") 
+tab_model(model3, show.reflvl = F, p.style = "numeric_stars") 
 ```
 
 
 ```{r,fig.width=8}
-plot_model(model3, show.values = TRUE, show.intercept = TRUE) + theme_prism()
+plot_model(model3, show.values = F, show.intercept = TRUE) + theme_prism()
 ```
 
 
@@ -253,7 +267,7 @@ BIC(model13)
 
 
 ```{r}
-model14 <- lmer(Stride_Frequency ~ Sprint_Type + Group + Sex + Leg_Length + (1|ID), data = Df)
+model14 <- lmer(Stride_Frequency ~ Sprint_Type * Group + Sex + Leg_Length + (1|ID), data = Df)
 ```
 
 
@@ -266,12 +280,12 @@ model15 <- lmer(Stride_Frequency ~ Sprint_Type * Group + Sex  + (1|ID), data = D
 
 
 ```{r}
-tab_model(model14, show.reflvl = TRUE, p.style = "numeric_stars") 
+tab_model(model14, show.reflvl = F, p.style = "numeric_stars") 
 ```
 
 
 ```{r,fig.width=8}
-plot_model(model14, show.values = TRUE, show.intercept = TRUE) + theme_prism()
+plot_model(model14, show.values = F, show.intercept = TRUE) + theme_prism()
 ```
 
 
@@ -285,7 +299,9 @@ tab_model(model3,model6,model9,model12,model14)
 ## LMM estimates
 
 ```{r,fig.width=10}
-plot_models(model3,model6,model9,model12,model14) + theme_prism()
+p <- plot_models(model3,model6,model9,model12,model14) + theme_prism()
+p
+#ggsave("lmm_estimates.png")
 ```
 
 
@@ -300,6 +316,24 @@ label(Df$Stride_Frequency	)   <- "Stride Frequency (Hz)"
 
 caption  <- "Table 2. Sprint Kinematics for each Sprint Type by Training Group and Sex"
 
+my.render.cont <- function(x) {
+    with(stats.default(x), 
+         c("",
+           
+          "Mean (SD)" = sprintf("%s (%s)",
+                                round_pad(MEAN, 2),
+                                round_pad(SD, 2)),
+         
+          "Median (Min, Max)" = sprintf("%s (%s, %s)",
+                                       round_pad(MEDIAN, 2), 
+                                       round_pad(MIN, 2), 
+                                       round_pad(MAX, 2)))
+    )
+}
 
-table1(~Speed + Contact_Time + Flight_Time + Stride_Length + Stride_Frequency | Group*Sex, data=Df, caption=caption, overall = FALSE)
+
+T2 <- table1(~Speed + Contact_Time + Flight_Time + Stride_Length + 
+               Stride_Frequency | Group*Sex, data=Df, caption=caption, overall = FALSE,
+       render.continuous=my.render.cont)
+T2
 ```
