@@ -1,0 +1,305 @@
+---
+title: "Overground vs Treadmill Sprint Manuscript"
+author: "Samuel Montalvo, Ph.D."
+date: "2023-10-01"
+output:
+  word_document:
+    toc: yes
+  html_document:
+    code_folding: hide
+    toc: yes
+    toc_float: yes
+---
+
+```{r setup, include=FALSE}
+library(readxl)
+library(table1)
+library(tidyverse)
+library(rstatix)
+library(ggpubr)
+library(lme4)
+library(lmerTest)
+library(sjPlot)
+library(ggprism)
+library(dplyr)
+library(purrr)
+library(rstatix)
+library(knitr)
+```
+
+# Overview
+
+```{r}
+Df <- read_excel("Dataset.xlsx")
+
+Df <- Df %>%
+  rename(Sex = Gender) %>%
+  mutate(
+    Sex = as.factor(case_when(
+      Sex == "M" ~ "Male",
+      Sex == "F" ~ "Female",
+      TRUE ~ as.character(Sex)
+    )),
+    Group = fct_relevel(as.factor(case_when(
+      Group == "TRACK" ~ "Track Team",
+      Group == "RECREATIONAL" ~ "Recreational",
+      TRUE ~ as.character(Group)
+    )), "Track Team"),  # Ensure "Track Team" is the first level
+    Height = Height / 100,
+    Leg_Length = Leg_Length / 100,
+    Thigh_Circumference = Thigh_Circumference / 100,
+    Stride_Length = Stride_Length / 100
+  ) %>%
+  select(-Sport)
+
+Df$Sprint_Type <- as.factor(Df$Sprint_Type)
+
+Df$Order <- ifelse(Df$Sprint_Type == "Overground", 1, 2)
+
+```
+
+#Demographics
+
+```{r}
+label(Df$Age)   <- "Age (yrs)"
+label(Df$Weight)   <- "Weight (kg)"
+label(Df$Height)   <- "Height (cm)"
+label(Df$Leg_Length)   <- "Leg Length (cm)"
+label(Df$Thigh_Circumference	)   <- "Thigh Circumference (cm)"
+
+caption  <- "Table 1. Descriptive group characteristics"
+
+
+table1(~Age + Weight + Height + Leg_Length + Thigh_Circumference | Group*Sex, data=Df, caption=caption, overall = FALSE)
+```
+
+
+#Normality test
+
+```{r}
+# List of variables for normality test
+vars <- c("Speed", "Contact_Time", "Flight_Time", "Stride_Length", "Stride_Frequency")
+
+# Run Shapiro-Wilk tests for each variable by group, round results, and combine
+results <- map_dfr(vars, function(var) {
+  Df %>% 
+    group_by(Sex, Group) %>% 
+    shapiro_test(!!sym(var)) %>%
+    mutate(statistic = round(statistic, 2), p = round(p, 2))
+})
+
+# Display results with kable
+kable(results, caption = "Shapiro-Wilk Normality Tests by Group for Multiple Variables")
+```
+
+# Main Analysis
+
+## Speed
+
+
+
+
+```{r, eval=FALSE}
+model1 <- lmer(Speed ~ Sprint_Type + Group + Sex + Age + Weight + Height + Leg_Length + Thigh_Circumference + (1|ID), data = Df)
+summary(model1)
+AIC(model1)
+BIC(model1)
+```
+
+
+```{r, eval=FALSE}
+model2 <- lmer(Speed ~ Sprint_Type + Group + Sex + Leg_Length + Thigh_Circumference + (1|ID), data = Df)
+summary(model2)
+AIC(model2)
+BIC(model2)
+```
+
+
+
+```{r}
+model3 <- lmer(Speed ~ Sprint_Type * Group + Sex  + (1|ID), data = Df)
+```
+
+
+```{r}
+tab_model(model3, show.reflvl = TRUE, p.style = "numeric_stars") 
+```
+
+
+```{r,fig.width=8}
+plot_model(model3, show.values = TRUE, show.intercept = TRUE) + theme_prism()
+```
+
+
+
+## Contact time
+
+```{r, eval=FALSE}
+model4 <- lmer(Contact_Time ~ Sprint_Type + Group + Sex + Age + Weight + Height + Leg_Length + Thigh_Circumference + (1|ID), data = Df)
+summary(model4)
+AIC(model4)
+BIC(model4)
+```
+
+
+```{r, eval=FALSE}
+model5 <- lmer(Contact_Time ~ Sprint_Type + Group + Sex + Height + (1|ID), data = Df)
+summary(model5)
+AIC(model5)
+BIC(model5)
+```
+
+
+
+
+
+```{r}
+model6 <- lmer(Contact_Time ~ Sprint_Type * Group + Sex  + (1|ID), data = Df)
+```
+
+
+```{r}
+tab_model(model6, show.reflvl = TRUE, p.style = "numeric_stars") 
+```
+
+
+```{r,fig.width=8}
+plot_model(model6, show.values = TRUE, show.intercept = TRUE) + theme_prism()
+```
+
+
+
+## Flight time
+
+```{r, eval=FALSE}
+model7 <- lmer(Flight_Time ~ Sprint_Type + Group + Sex + Age + Weight + Height + Leg_Length + Thigh_Circumference + (1|ID), data = Df)
+summary(model7)
+AIC(model7)
+BIC(model7)
+```
+
+
+```{r, eval=FALSE}
+model8 <- lmer(Flight_Time ~ Sprint_Type + Group + Sex + Leg_Length + (1|ID), data = Df)
+summary(model8)
+AIC(model8)
+BIC(model8)
+```
+
+
+
+
+
+```{r}
+model9 <- lmer(Flight_Time ~ Sprint_Type * Group + Sex  + (1|ID), data = Df)
+```
+
+
+```{r}
+tab_model(model9, show.reflvl = TRUE, p.style = "numeric_stars") 
+```
+
+
+```{r,fig.width=8}
+plot_model(model9, show.values = TRUE, show.intercept = TRUE) + theme_prism()
+```
+
+
+## Stride Length
+
+```{r, eval=FALSE}
+model10 <- lmer(Stride_Length ~ Sprint_Type + Group + Sex + Age + Weight + Height + Leg_Length + Thigh_Circumference + (1|ID), data = Df)
+summary(model10)
+AIC(model10)
+BIC(model10)
+```
+
+
+```{r, eval=FALSE}
+model11 <- lmer(Stride_Length ~ Sprint_Type + Group + Sex  + (1|ID), data = Df)
+summary(model11)
+AIC(model11)
+BIC(model11)
+```
+
+
+
+
+
+```{r}
+model12 <- lmer(Stride_Length ~ Sprint_Type * Group + Sex  + (1|ID), data = Df)
+```
+
+
+```{r}
+tab_model(model12, show.reflvl = TRUE, p.style = "numeric_stars") 
+```
+
+
+```{r,fig.width=8}
+plot_model(model12, show.values = TRUE, show.intercept = TRUE) + theme_prism()
+```
+
+
+
+## Stride Frequency
+
+```{r, eval=FALSE}
+model13 <- lmer(Stride_Frequency ~ Sprint_Type + Group + Sex + Age + Weight + Height + Leg_Length + Thigh_Circumference + (1|ID), data = Df)
+summary(model13)
+AIC(model13)
+BIC(model13)
+```
+
+
+```{r}
+model14 <- lmer(Stride_Frequency ~ Sprint_Type + Group + Sex + Leg_Length + (1|ID), data = Df)
+```
+
+
+
+
+
+```{r, eval=FALSE}
+model15 <- lmer(Stride_Frequency ~ Sprint_Type * Group + Sex  + (1|ID), data = Df)
+```
+
+
+```{r}
+tab_model(model14, show.reflvl = TRUE, p.style = "numeric_stars") 
+```
+
+
+```{r,fig.width=8}
+plot_model(model14, show.values = TRUE, show.intercept = TRUE) + theme_prism()
+```
+
+
+#Results
+## LMM Results Table
+
+```{r,fig.width=10}
+tab_model(model3,model6,model9,model12,model14) 
+```
+
+## LMM estimates
+
+```{r,fig.width=10}
+plot_models(model3,model6,model9,model12,model14) + theme_prism()
+```
+
+
+##Table 2
+
+```{r}
+label(Df$Speed)   <- "Speed (m/s)"
+label(Df$Contact_Time)   <- "Contact Time (s)"
+label(Df$Flight_Time)   <- "Flight Time (s)"
+label(Df$Stride_Length)   <- "Stride Length (m)"
+label(Df$Stride_Frequency	)   <- "Stride Frequency (Hz)"
+
+caption  <- "Table 2. Sprint Kinematics for each Sprint Type by Training Group and Sex"
+
+
+table1(~Speed + Contact_Time + Flight_Time + Stride_Length + Stride_Frequency | Group*Sex, data=Df, caption=caption, overall = FALSE)
+```
